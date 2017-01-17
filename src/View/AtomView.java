@@ -33,9 +33,10 @@ public class AtomView extends Group {
                 System.out.println("Undefinded Atom: "+ atom.getAtomName());
         }
         sphere.setMaterial(material);
-        sphere.setTranslateX(atom.getX());
-        sphere.setTranslateY(atom.getY());
-        sphere.setTranslateZ(atom.getZ());
+
+        sphere.setTranslateX(this.getTranslateX());
+        sphere.setTranslateY(this.getTranslateY());
+        sphere.setTranslateZ(this.getTranslateZ());
 
         this.getChildren().add(sphere);
     }

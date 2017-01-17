@@ -38,7 +38,7 @@ public class BasicView extends BorderPane {
     public CheckBox atomSlideChecker = new CheckBox("Edit Atom Ratio");
     public CheckBox bondSlideChecker = new CheckBox("Edit Bond Ratio");
     public Button applyButton = new Button("Apply");
-    PerspectiveCamera camera = new PerspectiveCamera(true);
+    public PerspectiveCamera camera = new PerspectiveCamera(true);
     public Slider atomSlider = new Slider();
     public Slider bondSlider = new Slider();
 

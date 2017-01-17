@@ -16,7 +16,6 @@ public class Aminoacid {
     public Aminoacid(int id, String name){
         this.id = id;
         this.name = name;
-        acidID = findAcidId(name);
     }
 
     public ObservableList<Atom> getAtomList() {
@@ -39,38 +38,17 @@ public class Aminoacid {
     }
 
 
-    public String findAcidId(String name){
-        switch(name) {
-            case "ALA": return("A");
-            case "ARG": return("R");
-            case "ASN": return("N");
-            case "ASP": return("D");
-            case "CYS": return("C");
-            case "GLN": return("Q");
-            case "GLU": return("E");
-            case "GLY": return("E");
-            case "HIS": return("H");
-            case "ILE": return("I");
-            case "LEU": return("L");
-            case "LYS": return("K");
-            case "MET": return("M");
-            case "PHE": return("F");
-            case "PRO": return("P");
-            case "SER": return("S");
-            case "THR": return("T");
-            case "TRP": return("W");
-            case "TYR": return("Y");
-            case "VAL": return("V");
-
-
-            default:
-                System.out.println("couldn't identify Aminoacid " + name);
-                return(" ");
-        }
-
-    }
     public void addAtom(Atom newAtom){
         atomList.add(newAtom);
+    }
+
+    public Atom getAtomByElement(String element){
+        for(int i = 0; i< atomList.size(); i++){
+            if(atomList.get(i).getAtomName().equals(element)){
+                return atomList.get(i);
+            }
+        }
+        return null;
     }
 
 }

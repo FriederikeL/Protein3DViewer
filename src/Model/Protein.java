@@ -34,6 +34,7 @@ public class Protein {
     //Store all information for helix and sheets for the later sekundary structure
     private ArrayList<Helix> helixListe = new ArrayList();
     private ArrayList<Sheet> sheetListe = new ArrayList();
+    private String primaryStructure = "";
 
     public Protein(File file){
         read(file);
@@ -68,6 +69,8 @@ public class Protein {
                     case "HELIX": helixListe.add(createHelix(line));
                         break;
                     case "SHEET": sheetListe.add(createSheet(line));
+                        break;
+                    case "SEQRES": primaryStructure = primaryStructure.concat(parseSEQRES(line));
                         break;
                     case "MODEL":
                         actualModel = new MoleculeModel(Integer.parseInt(line.substring(10, 14).replace(" ", "")));
@@ -171,27 +174,95 @@ public class Protein {
         }
 
     }
-    //TODO: Fragen ob es okay ist wenn nur das erste Model behandelt wird
     public String getPrintableStructures(){
-        String primstrk = "";
         String secstrk = "";
+        String structures = "";
+        int split = 130;
+        int counter = 1;
+        int end = primaryStructure.length();
         MoleculeModel model = modelList.get(0);
+        secstrk = secstrk.concat(stringFiller(secstrk, "-", primaryStructure.length()-model.getAminoAcidList().size()));
         for(int i = model.getLowestAAid(); i<= model.getHighestAAid(); i++){
             if (model.getId_AminoAcidHash().containsKey(i)) {
-                primstrk = primstrk.concat(model.getAminoAcidByID(i).getAcidID());
                 secstrk = secstrk.concat(model.getAminoAcidByID(i).getSecondStructure());
             }
         }
-        return(stringFiller("Primary structure:", 22) + primstrk + "\n" + stringFiller("Secundary structure:", 22) + secstrk);
+        if(secstrk.length() > split){
+            structures = structures.concat(stringFiller("", " ",22)+stringFiller(Integer.toString(counter)," ", counter+128)+(counter+128)+"\n"+stringFiller("Primary structure:"," ", 22) + primaryStructure.substring(0, 130)+ "\n" + stringFiller("Secundary structure:"," ", 22) + secstrk.substring(0,130) + "\n\n");
+            secstrk = secstrk.substring(130);
+            primaryStructure = primaryStructure.substring(130);
+            counter = counter+129;
+        }
+        structures = structures.concat(stringFiller("", " ",22)+stringFiller(Integer.toString(counter)," ", secstrk.length()-1)+end+"\n"+stringFiller("Primary structure:"," ", 22) + primaryStructure+ "\n" + stringFiller("Secundary structure:"," ", 22) + secstrk);
+
+        return(structures);
 
     }
 
-    private String stringFiller(String str, int lenght){
+    private String stringFiller(String str, String filler, int lenght){
         while(str.length() < lenght){
-            str = str.concat(" ");
+            str = str.concat(filler);
         }
-        System.out.println(str.length());
         return(str);
+    }
+
+    public String parseSEQRES(String line){
+        line = line.substring(19);
+        String[] aAnames = line.split(" ");
+        String name;
+        String primstructure = "";
+        for(int i = 0; i< aAnames.length; i++) {
+            name = aAnames[i];
+
+            switch (name) {
+                case "ALA":primstructure = primstructure.concat("A");
+                    break;
+                case "ARG":primstructure = primstructure.concat("R");
+                    break;
+                case "ASN":primstructure = primstructure.concat("N");
+                    break;
+                case "ASP": primstructure = primstructure.concat("D");
+                    break;
+                case "CYS":primstructure = primstructure.concat("C");
+                    break;
+                case "GLN":primstructure = primstructure.concat("Q");
+                    break;
+                case "GLU":primstructure = primstructure.concat("E");
+                    break;
+                case "GLY":primstructure = primstructure.concat("G");
+                    break;
+                case "HIS":primstructure = primstructure.concat("H");
+                    break;
+                case "ILE":primstructure = primstructure.concat("I");
+                    break;
+                case "LEU":primstructure = primstructure.concat("L");
+                    break;
+                case "LYS":primstructure = primstructure.concat("K");
+                    break;
+                case "MET":primstructure = primstructure.concat("M");
+                    break;
+                case "PHE":primstructure = primstructure.concat("F");
+                    break;
+                case "PRO":primstructure = primstructure.concat("P");
+                    break;
+                case "SER":primstructure = primstructure.concat("S");
+                    break;
+                case "THR":primstructure = primstructure.concat("T");
+                    break;
+                case "TRP":primstructure = primstructure.concat("W");
+                    break;
+                case "TYR":primstructure = primstructure.concat("Y");
+                    break;
+                case "VAL":primstructure = primstructure.concat("V");
+                    break;
+
+                default:
+                    System.out.println("couldn't identify Aminoacid " + name);
+                    return (" ");
+            }
+        }
+        return primstructure;
+
     }
 
 
